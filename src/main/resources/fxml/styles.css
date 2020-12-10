@@ -1,0 +1,31 @@
+.root {
+    -fx-font-size: 14px;
+}
+
+.iconButton {
+    -fx-background: none;
+}
+
+.menu-popover {
+    -fx-padding: 16px;
+    -fx-min-width: 100px;
+}
+
+.menu-popover * {
+    -fx-padding: 4px;
+}
+
+.userAvatar {
+}
+
+.loginButton {
+    -fx-background-color: #d50108;
+    -fx-text-fill: white;
+    -fx-padding: 4px 8px 4px 8px;
+}
+
+.logoutButton {
+    -fx-background-color: black;
+    -fx-text-fill: white;
+    -fx-padding: 4px 8px 4px 8px;
+}

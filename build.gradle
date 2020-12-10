@@ -1,0 +1,202 @@
+plugins {
+    id 'application'
+    id 'io.spring.dependency-management' version '1.0.10.RELEASE'
+    id 'org.openjfx.javafxplugin' version '0.0.9'
+    id 'org.beryx.runtime' version '1.11.4'
+    id 'com.autonomousapps.dependency-analysis' version '0.69.0'
+
+    id 'com.github.ben-manes.versions' version '0.36.0'
+}
+
+group 'com.github.eduramiba'
+version = '1.0.0'
+
+def appName = 'JavaFX Auth0 Login Example'
+
+def targetJDK = 14
+def fxVersion = '15.0.1'
+
+sourceCompatibility = targetJDK
+targetCompatibility = targetJDK
+
+compileJava.options.encoding = 'UTF-8'
+compileTestJava.options.encoding = 'UTF-8'
+
+def os = org.gradle.internal.os.OperatingSystem.current()
+
+dependencyManagement {
+    //Manage some transitive dependencies so they are up to date:
+    dependencies {
+        dependency group: 'commons-logging', name: 'commons-logging', version: '1.2'
+        dependency group: 'commons-codec', name: 'commons-codec', version: '1.15'
+        dependency group: 'commons-math3', name: 'commons-math3', version: '3.6.1'
+        dependency group: 'com.google.guava', name: 'guava', version: '30.0-jre'
+        dependency group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib', version: '1.4.21'
+        dependency group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib-common', version: '1.4.21'
+
+        dependency group: 'cglib', name: 'cglib', version: '3.3.0'
+        dependency group: 'org.ow2.asm', name: 'asm', version: '9.0'
+
+        dependency group: 'net.java.dev.jna', name: 'jna', version: '5.6.0'
+        dependency group: 'net.java.dev.jna', name: 'jna-platform', version: '5.6.0'
+    }
+}
+
+dependencies {
+    //Logging:
+    implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.30'
+    implementation group: 'org.slf4j', name: 'jul-to-slf4j', version: '1.7.30'
+    runtimeOnly group: 'org.slf4j', name: 'jcl-over-slf4j', version: '1.7.30'
+    runtimeOnly group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
+    runtimeOnly group: 'ch.qos.logback', name: 'logback-core', version: '1.2.3'
+    runtimeOnly group: 'org.codehaus.janino', name: 'janino', version: '3.1.2'
+
+    //Others:
+    implementation group: 'org.jooq', name: 'jool', version: '0.9.14'
+    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.11'
+    implementation group: 'commons-codec', name: 'commons-codec', version: '1.15'
+    implementation group: 'commons-io', name: 'commons-io', version: '2.8.0'
+    implementation group: 'com.auth0', name: 'java-jwt', version: '3.11.0'
+    implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.9.0'
+    implementation group: 'net.jodah', name: 'failsafe', version: '2.4.0'
+    implementation group: 'org.controlsfx', name: 'controlsfx', version: '11.0.3'
+    
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.12.0'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.12.0'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.12.0'
+    implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jdk8', version: '2.12.0'
+    implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.12.0'
+    implementation group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-xml', version: '2.12.0'
+
+    configurations.all {
+        resolutionStrategy.eachDependency { details ->
+            if (details.requested.name == 'log4j' || details.requested.name == 'log4j-core' || details.requested.name == 'log4j-api') {
+                details.useTarget 'org.slf4j:log4j-over-slf4j:1.7.30'
+            }
+        }
+    }
+}
+
+sourceSets {
+    main {
+        resources {
+            srcDirs 'src/main/resources'
+        }
+        java {
+            srcDirs 'src/main/java'
+        }
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+javafx {
+    version = fxVersion
+    modules = ['javafx.graphics', 'javafx.controls', 'javafx.fxml', 'javafx.web', 'javafx.media', 'javafx.swing']
+}
+
+application {
+    mainClassName = 'com.github.eduramiba.javafx.auth0.Launcher'
+    applicationName = appName
+    
+    applicationDefaultJvmArgs =  [
+            '-Xms256m',
+            '-Xmx1024m',
+            '-Djavafx.autoproxy.disable=true',
+            '--add-opens=javafx.base/com.sun.javafx.event=ALL-UNNAMED',
+            '--add-opens=javafx.controls/javafx.scene.control=ALL-UNNAMED',
+            '--add-opens=javafx.base/com.sun.javafx.runtime=ALL-UNNAMED',
+            '--add-opens=javafx.graphics/javafx.scene=ALL-UNNAMED',
+            '--add-opens=javafx.base/com.sun.javafx.collections=ALL-UNNAMED',
+            '--add-opens=javafx.graphics/com.sun.javafx.css=ALL-UNNAMED',
+            '--add-opens=javafx.graphics/com.sun.javafx.scene=ALL-UNNAMED',
+            '--add-opens=javafx.graphics/com.sun.javafx.scene.traversal=ALL-UNNAMED',
+            '--add-opens=javafx.controls/com.sun.javafx.scene.control=ALL-UNNAMED',
+            '--add-opens=javafx.controls/com.sun.javafx.scene.control.behavior=ALL-UNNAMED',
+            '--add-opens=javafx.controls/javafx.scene.control.skin=ALL-UNNAMED'
+    ]
+}
+
+
+def jPkgInstallerType
+def favicon
+if (os.isLinux()) {
+    jPkgInstallerType = 'deb'
+    favicon = 'favicon.png'
+} else if (os.isMacOsX()) {
+    jPkgInstallerType = 'dmg'
+    favicon = 'favicon.icns'
+} else if (os.isWindows()) {
+    favicon = 'favicon.ico'
+    jPkgInstallerType = 'msi'
+}
+
+runtime {
+    //See https://github.com/beryx-gist/badass-jlink-example-richtextfx for examples
+    options = ['--strip-debug', '--compress', '2', '--no-header-files', '--no-man-pages']
+    modules = [
+            'java.se',
+            'java.management',
+            'java.prefs',
+            'java.instrument',
+            'java.desktop',
+            'jdk.net',
+            'jdk.unsupported',
+            'java.scripting',
+            'java.logging',
+            'java.naming',
+            'java.xml',
+            'jdk.crypto.cryptoki',//IMPORTANT FOR SSL AND WEBVIEW TO WORK AFTER JLINK!!
+            'jdk.crypto.ec'//IMPORTANT FOR SSL TO WORK AFTER JLINK!!
+    ]
+
+    launcher {
+        noConsole = true
+    }
+    jpackage {
+        imageOptions = ['--verbose', '--vendor', 'Example', '--app-version', version, '--icon', favicon, '--copyright', 'JavaFX Auth0 Login Example ' + getYear(), '--description', 'JavaFX Auth0 Login Example']
+
+        installerName = appName
+        installerOptions += ['--app-version', version]
+        installerType = jPkgInstallerType
+        if (os.windows) {
+            installerOptions += ['--win-per-user-install', '--win-dir-chooser', '--win-menu', '--win-shortcut', '--app-version', version, '--win-upgrade-uuid', 'bfed2ae0-5e82-4d7e-acb1-b955a291a944']
+        } else if (os.linux) {
+            installerName = 'JavaFx-Auth0-Login-Example'
+            installerOptions += ['--linux-package-name', 'javafx-auth0-login-example', '--linux-deb-maintainer', 'eduramiba@gmail.com', '--linux-shortcut', '--linux-menu-group', 'Applications/Development']
+        } else if (os.macOsX) {
+            installerOptions += ['--mac-package-identifier', 'javafx-auth0-login-example', '--mac-package-name', appName]
+        }
+    }
+}
+
+tasks.jpackageImage.doLast {
+    if (os.windows) {
+        def distDir = 'build/jpackage/' + appName
+
+        delete fileTree('build/jpackage/' + appName + '/app') {
+            //Can't get unnecessary openjfx jars to not be included... maven is best for this than gradle but we need the org.beryx.runtime plugin
+            include 'javafx-*-linux.jar'
+            include 'javafx-*-mac.jar'
+        }
+    }
+}
+
+def getYear() {
+    def date = new Date()
+    return date.format('yyy')
+}
+
+task dist {
+    dependsOn clean, jpackageImage
+    description 'Calls clean and then jpackageImage [default]'
+}
+
+task distInstaller {
+    dependsOn clean, jpackage
+    description 'Calls clean and then jpackage'
+}
+
+defaultTasks 'dist'
