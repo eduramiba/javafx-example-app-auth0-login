@@ -2,7 +2,7 @@
 
 ## What is this?
 
-This is a complete JavaFX application skeleton that includes a login/logout process integrated with Auth0. It's based on the real code for one of my desktop apps, I reduced it to showcase only the Auth0 login but could be more simple.
+This is a complete JavaFX application skeleton that includes a login/logout process integrated with Auth0. It's based on the real code for one of my desktop apps, I reduced it to showcase only the Auth0 login but could be simpler.
 
 The important part for Auth0 login is in class `Auth0Login.java` but many other utilities and necessary REST client code are included.
 
