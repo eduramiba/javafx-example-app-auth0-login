@@ -13,7 +13,7 @@ version = '1.0.0'
 
 def appName = 'JavaFX Auth0 Login Example'
 
-def targetJDK = 14
+def targetJDK = 11 //If you use dist or distInstaller you will need Java 14 at least, for jpackage
 def fxVersion = '15.0.1'
 
 sourceCompatibility = targetJDK
